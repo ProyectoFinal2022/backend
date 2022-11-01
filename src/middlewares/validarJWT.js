@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Personas = require('');
+const Users = require('../models/User');
 
 const validarJWT = async (req, res, next) => {
     let token = req.headers.authorization;
@@ -12,21 +12,21 @@ const validarJWT = async (req, res, next) => {
 
     try {
         const { id } = await jwt.verify(token, process.env.SECRET)
-        const persona = await Personas.findById(id)
+        const usuario = await Users.findById(id)
 
-        if (!persona) {
+        if (!usuario) {
             return res.status(401).json({
                 error: 'Token no válido - usuario no existe en BD'
             });
         }
 
-        if (!persona.activo) {
+        if (!usuario.activo) {
             return res.status(401).json({
                 msg: 'Token no válido o usuario inactivo'
             });
         }
 
-        req.user = persona._doc;
+        req.user = usuario._doc;
         
         next();
     } catch (error) {
