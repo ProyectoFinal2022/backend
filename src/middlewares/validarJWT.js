@@ -11,8 +11,9 @@ const validarJWT = async (req, res, next) => {
     };
 
     try {
-        const { id } = await jwt.verify(token, process.env.SECRET)
-        const usuario = await Users.findById(id)
+        const { uid } = await jwt.verify(token, process.env.SECRET)
+        const usuario = await Users.findById(uid)
+        console.log(usuario)
 
         if (!usuario) {
             return res.status(401).json({
@@ -20,7 +21,7 @@ const validarJWT = async (req, res, next) => {
             });
         }
 
-        if (!usuario.activo) {
+        if (!usuario.isActive) {
             return res.status(401).json({
                 msg: 'Token no válido o usuario inactivo'
             });
